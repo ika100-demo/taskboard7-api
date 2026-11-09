@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 import threading
 from collections.abc import Iterator
-from contextlib import contextmanager
+from contextlib import contextmanager, suppress
 
 import psycopg
 import structlog
@@ -75,19 +75,15 @@ class Database:
                 yield conn
                 conn.commit()
             except BaseException:
-                try:
+                with suppress(psycopg.OperationalError, psycopg.InterfaceError):
                     conn.rollback()
-                except (psycopg.OperationalError, psycopg.InterfaceError):
-                    pass
                 raise
         except (psycopg.OperationalError, psycopg.InterfaceError) as exc:
             logger.warning("database_unavailable", error=type(exc).__name__, operation="query")
             raise DatabaseUnavailableError("database unavailable") from exc
         finally:
-            try:
+            with suppress(Exception):  # closing a broken connection must not mask errors
                 conn.close()
-            except Exception:  # noqa: BLE001  # closing a broken connection must not mask errors
-                pass
 
     def ping(self, timeout: float = READY_TIMEOUT_S) -> bool:
         """SELECT 1 bounded by `timeout` wall-clock seconds; never raises."""
