@@ -3,8 +3,11 @@
 import threading
 import uuid
 from datetime import date
+from typing import Protocol
 
+from taskboard7_api.db import get_database
 from taskboard7_api.tasks.models import Task
+from taskboard7_api.tasks.pg_store import PostgresTaskStore
 
 
 class TaskStore:
@@ -29,8 +32,24 @@ class TaskStore:
             self._tasks.clear()
 
 
-_store = TaskStore()
+class TaskRepository(Protocol):
+    """What the router needs from a task store."""
+
+    def add(self, title: str, due_date: date | None) -> Task: ...
+
+    def list(self) -> list[Task]: ...
+
+    def clear(self) -> None: ...
 
 
-def get_task_store() -> TaskStore:
-    return _store
+_store: TaskRepository | None = None
+_store_lock = threading.Lock()
+
+
+def get_task_store() -> TaskRepository:
+    """Lazily created Postgres store; creating it does not connect."""
+    global _store
+    with _store_lock:
+        if _store is None:
+            _store = PostgresTaskStore(get_database())
+        return _store
