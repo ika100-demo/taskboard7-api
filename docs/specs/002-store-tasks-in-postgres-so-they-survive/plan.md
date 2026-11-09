@@ -10,6 +10,7 @@ tasks:
     covers: [AC-002.1, AC-002.4, AC-002.5, AC-002.6]
     parallel_safe: true
     depends_on: []
+    done: true
   - id: t2
     title: Add PostgresTaskStore and wire it behind get_task_store
     files: [src/taskboard7_api/tasks/pg_store.py, src/taskboard7_api/tasks/store.py]
