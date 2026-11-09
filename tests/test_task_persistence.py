@@ -106,13 +106,15 @@ def test_unreachable_database_returns_503(use_db, database_url: str) -> None:  #
     use_db(_closed_port_url())
     start = time.monotonic()
     r = c.post("/tasks", json={"title": "lost"})
+    assert time.monotonic() - start < 5
     assert r.status_code == 503
     assert r.headers["content-type"].startswith("application/json")
     assert r.json() == UNAVAILABLE
+    start = time.monotonic()
     r = c.get("/tasks")
+    assert time.monotonic() - start < 5
     assert r.status_code == 503
     assert r.json() == UNAVAILABLE
-    assert time.monotonic() - start < 10  # two calls, each within 5 s
     use_db(database_url)
     assert c.get("/tasks").json() == []  # nothing stored by the failed POST
 
