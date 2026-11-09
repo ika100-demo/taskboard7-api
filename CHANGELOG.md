@@ -1,3 +1,10 @@
+## [0.2.0] — 2026-11-09
+
+Tagged commit: 40c9870
+
+### Features
+- feat(tasks): store tasks in Postgres so they survive restarts (#5) (40c9870)
+
 ## [0.1.0] — 2026-11-09
 
 Tagged commit: 653ac52
