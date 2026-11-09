@@ -27,9 +27,8 @@ def _use(url: str) -> None:
 
     A new instance as far as state is concerned: a restart or a second process.
     """
-    from taskboard7_api.tasks.pg_store import PostgresTaskStore
-
     from taskboard7_api.db import Database, get_database
+    from taskboard7_api.tasks.pg_store import PostgresTaskStore
     from taskboard7_api.tasks.store import get_task_store
 
     database = Database(url)

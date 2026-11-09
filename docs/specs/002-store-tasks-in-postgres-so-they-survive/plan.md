@@ -17,12 +17,14 @@ tasks:
     covers: [AC-002.1, AC-002.2, AC-002.3, AC-002.4, AC-002.6]
     parallel_safe: true
     depends_on: [t1]
+    done: true
   - id: t3
     title: Map DatabaseUnavailableError to 503 and make /ready check the database
     files: [src/taskboard7_api/main.py, docs/env-vars.md]
     covers: [AC-002.4, AC-002.5, AC-002.6]
     parallel_safe: true
     depends_on: [t1]
+    done: true
 ---
 
 # Plan — 002 Store tasks in Postgres so they survive restarts and are shared between instances
