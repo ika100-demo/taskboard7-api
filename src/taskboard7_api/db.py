@@ -62,8 +62,7 @@ class Database:
                 return
             with conn.transaction():
                 conn.execute("SELECT pg_advisory_xact_lock(%s)", (_SCHEMA_LOCK_KEY,))
-                conn.execute(_CREATE_TASKS)  # type: ignore[arg-type]  # constant literal
-            self._schema_ready = True
+                conn.execute(_CREATE_TASKS)            self._schema_ready = True
             logger.info("task_schema_ready")
 
     @contextmanager
