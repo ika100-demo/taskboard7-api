@@ -1,7 +1,7 @@
 ---
 spec_id: 002-store-tasks-in-postgres-so-they-survive
 title: Store tasks in Postgres so they survive restarts and are shared between instances
-status: building
+status: done
 priority: P1
 shape: service-python
 parent: ika100-demo/taskboard7-gitops:001-persistent-tasks-in-postgres-with-web-ui
@@ -123,3 +123,4 @@ Database timeouts: connect 2 s, statement 3 s, /ready check (SELECT 1) 1 s; neve
 - 2026-11-09 created from the system plan, with its criteria (spec 147)
 - 2026-11-09 approved
 - 2026-11-09 building
+- 2026-11-09 done
