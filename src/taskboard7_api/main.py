@@ -4,12 +4,13 @@ from __future__ import annotations
 
 import os
 
-from fastapi import FastAPI
-from fastapi.responses import Response
+from fastapi import Depends, FastAPI, Request
+from fastapi.responses import JSONResponse, Response
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from pydantic import BaseModel
 
 from . import __version__
+from .db import Database, DatabaseUnavailableError, get_database
 from .logging_config import configure_logging
 from .metrics import MetricsMiddleware
 from .tasks.router import router as tasks_router
@@ -34,10 +35,20 @@ def health() -> HealthResponse:
     return HealthResponse(status="ok")
 
 
+@app.exception_handler(DatabaseUnavailableError)
+async def database_unavailable_handler(
+    request: Request, exc: DatabaseUnavailableError
+) -> JSONResponse:
+    """Map a database outage to 503."""
+    return JSONResponse(status_code=503, content={"detail": "Database unavailable"})
+
+
 @app.get("/ready", response_model=HealthResponse)
-def ready() -> HealthResponse:
-    """Readiness probe — returns 200 when the service is ready to accept traffic."""
-    return HealthResponse(status="ready")
+def ready(database: Database = Depends(get_database)) -> HealthResponse | JSONResponse:  # noqa: B008
+    """Readiness probe — 200 only while the database answers SELECT 1."""
+    if database.ping():
+        return HealthResponse(status="ready")
+    return JSONResponse(status_code=503, content={"status": "not ready"})
 
 
 @app.get("/ping")
