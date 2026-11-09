@@ -1,7 +1,7 @@
 ---
 spec_id: 001-create-and-list-tasks
 title: Create and list tasks
-status: building
+status: done
 priority: P1
 shape: service-python
 ---
@@ -54,3 +54,4 @@ As a client of the Task API, I want to list all tasks, so that I can show the bo
 - 2026-11-09 created
 - 2026-11-09 approved
 - 2026-11-09 building
+- 2026-11-09 done
