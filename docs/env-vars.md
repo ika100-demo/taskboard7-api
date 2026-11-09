@@ -9,6 +9,15 @@ Configuration is read exclusively from environment variables. Defaults below are
 | `PORT` | `8080` | HTTP port the service listens on. |
 | `LOG_LEVEL` | `INFO` | Logging level. One of `DEBUG`, `INFO`, `WARNING`, `ERROR`. |
 
+## Database
+
+| Variable | Default | Description |
+|---|---|---|
+| `DATABASE_URL` | _(unset)_ | Postgres connection URL. Injected by the gitops `uses: postgres` setting. When unset, `/tasks` answers 503 and `/ready` answers 503. |
+| `TEST_DATABASE_URL` | _(unset)_ | Tests only: Postgres to test against; without it the tests start a testcontainers Postgres. |
+
+Timeouts: 2 s connect, 3 s per statement, 1 s for the `/ready` check (`SELECT 1`, not cached).
+
 ## Observability
 
 | Variable | Default | Description |
